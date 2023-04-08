@@ -65,6 +65,7 @@ Attribute CRYPTOPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
     Dim CallerRows As Long
     Dim Field As String
     Dim k As Long
+    Application.Calculation = xlCalculationManual
     
     ' Set default values
     Field = "PRICE"
@@ -127,6 +128,8 @@ Attribute CRYPTOPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
         output(i, 0) = Val(json(i)(Field))
     Next i
     
+    Application.Calculation = xlCalculationAutomatic
+    
     ' Return output array
     CRYPTOPRICE = output
     
@@ -147,6 +150,8 @@ Attribute CRYPTOBALANCE.VB_ProcData.VB_Invoke_Func = " \n14"
     Dim CallerRows As Long
     Dim Field As String
     Dim k As Long
+    
+    Application.Calculation = xlCalculationManual
     
     Field = "QUANTITY"
     
@@ -214,6 +219,8 @@ Attribute CRYPTOBALANCE.VB_ProcData.VB_Invoke_Func = " \n14"
         output(i, 0) = Val(json(i)(Field))
     Next i
     
+    Application.Calculation = xlCalculationAutomatic
+    
     ' Return output array
     CRYPTOBALANCE = output
     
@@ -232,6 +239,8 @@ Attribute CRYPTONETWORTH.VB_ProcData.VB_Invoke_Func = " \n14"
     Dim private_path As String
     Dim http_options As Object
     Dim CallerRows As Long
+    
+    Application.Calculation = xlCalculationManual
     
     
     ' Set API endpoint and options
@@ -275,6 +284,8 @@ Attribute CRYPTONETWORTH.VB_ProcData.VB_Invoke_Func = " \n14"
     request.setRequestHeader "apikey", http_options("apikey")
     request.send
     
+    Application.Calculation = xlCalculationAutomatic
+    
     ' Return output array
     CRYPTONETWORTH = Val(request.responseText)
     
@@ -298,6 +309,8 @@ Attribute CRYPTODEXPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
     Dim Field As String
     Dim Field1 As String
     Dim k As Long
+    
+    Application.Calculation = xlCalculationManual
     
     Field = "PRICE"
     Field1 = "DEXPRICE2"
@@ -370,6 +383,8 @@ Attribute CRYPTODEXPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
         output(i, 0) = Val(json(i)(Field))
     Next i
     
+    Application.Calculation = xlCalculationAutomatic
+    
     ' Return output array
     CRYPTODEXPRICE = output
     
@@ -390,6 +405,8 @@ Attribute CRYPTOVOLATILITY.VB_ProcData.VB_Invoke_Func = " \n14"
     Dim Field As String
     Dim Field1 As String
     Dim k As Long
+    
+    Application.Calculation = xlCalculationManual
     
     Field = "VOLATILTY_30D"
     Field1 = "30DVOL"
@@ -458,6 +475,8 @@ Attribute CRYPTOVOLATILITY.VB_ProcData.VB_Invoke_Func = " \n14"
         End If
         output(i, 0) = Val(json(i)(Field))
     Next i
+    
+    Application.Calculation = xlCalculationAutomatic
     
     ' Return output array
     CRYPTOVOLATILITY = output
