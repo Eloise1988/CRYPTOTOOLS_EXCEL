@@ -389,6 +389,218 @@ Attribute CRYPTODEXPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
     CRYPTODEXPRICE = output
     
 End Function
+Public Function CRYPTOHIST(ticker As Variant, datatype As String, startdate As String, enddate As String) As Variant
+Attribute CRYPTOHIST.VB_Description = "Returns the historical cryptocurrency OHLC data"
+Attribute CRYPTOHIST.VB_ProcData.VB_Invoke_Func = " \n14"
+' Returns the historical cryptocurrency OHLC data
+' ticker: Array of tickers (max 3 on freemium)
+' datatype: "open", "high", "low", "close", "volume", "marketcap"
+' startdate: Start date in "yyyy-mm-dd" format
+' enddate: End date in "yyyy-mm-dd" format
+
+    ' Declare variables and objects
+    Dim URL As String
+    Dim request As Object
+    Dim private_path As String
+    Dim http_options As Object
+    Dim json As Object
+    Dim data() As Variant
+    Dim i As Long, k As Long
+    Dim CallerRows As Long
+    Application.Calculation = xlCalculationManual
+    
+    ' Set API endpoint and options
+    private_path = "https://api.charmantadvisory.com"
+    Set http_options = CreateObject("Scripting.Dictionary")
+    http_options("apikey") = GetMyIPAddress()
+    
+    ' Check if custom API key is provided
+    If CRYPTOTOOLS_API_KEY <> "my_api_key" Then
+        private_path = "https://privateapi.charmantadvisory.com"
+        Set http_options = CreateObject("Scripting.Dictionary")
+        http_options.Add "headers", CreateObject("Scripting.Dictionary")
+        http_options("headers")("apikey") = CRYPTOTOOLS_API_KEY
+    End If
+
+    ' Construct API URL
+    If TypeOf ticker Is Range Then
+        CallerRows = ticker.Rows.Count
+        URL = "/PRICEHISTO/" & ticker(1, 1).Value
+        For k = 2 To CallerRows
+            URL = URL & "%2C" & ticker(k, 1).Value
+        Next k
+    Else
+        URL = "/PRICEHISTO/" & ticker
+    End If
+
+    URL = URL & "/" & datatype & "/" & startdate & "/" & enddate & "/" & http_options("apikey")
+    
+    ' Combine private path and API URL
+    URL = private_path & URL
+    
+    ' Send API request
+    Set request = CreateObject("MSXML2.XMLHTTP")
+    request.Open "GET", URL, False
+    request.setRequestHeader "apikey", http_options("apikey")
+    request.send
+
+    ' Parse JSON response
+    Set json = JsonConverter.ParseJson(request.responseText)
+    
+    ' Create output array
+    ReDim Preserve data(1 To json.Count, 1 To 5) ' Assuming 5 fields: Open, High, Low, Close, Volume
+
+    ' Extract field value from each JSON object
+    For i = 1 To json.Count
+        data(i, 1) = Val(json(i)("OPEN"))
+        data(i, 2) = Val(json(i)("HIGH"))
+        data(i, 3) = Val(json(i)("LOW"))
+        data(i, 4) = Val(json(i)("CLOSE"))
+        data(i, 5) = Val(json(i)("VOLUME"))
+    Next i
+
+    Application.Calculation = xlCalculationAutomatic
+
+    ' Return output array
+    CRYPTOHIST = data
+
+End Function
+Public Function CRYPTOTOKENLIST(address As String, Optional chain As String = "all") As Variant
+Attribute CRYPTOTOKENLIST.VB_Description = "Returns the list of all tokens on specified chain or all chains"
+Attribute CRYPTOTOKENLIST.VB_ProcData.VB_Invoke_Func = " \n14"
+' Returns the list of all tokens on specified chain or all chains
+' address: The wallet address
+' chain: The blockchain to query (default is "all")
+
+    ' Declare variables and objects
+    Dim URL As String
+    Dim request As Object
+    Dim private_path As String
+    Dim http_options As Object
+    Dim json As Object
+    Dim i As Long
+    Dim data() As Variant
+    Application.Calculation = xlCalculationManual
+    
+    ' Set API endpoint and options
+    private_path = "https://api.charmantadvisory.com"
+    Set http_options = CreateObject("Scripting.Dictionary")
+    http_options("apikey") = GetMyIPAddress()
+    
+    ' Check if custom API key is provided
+    If CRYPTOTOOLS_API_KEY <> "my_api_key" Then
+        private_path = "https://privateapi.charmantadvisory.com"
+        Set http_options = CreateObject("Scripting.Dictionary")
+        http_options.Add "headers", CreateObject("Scripting.Dictionary")
+        http_options("headers")("apikey") = CRYPTOTOOLS_API_KEY
+    End If
+
+    ' Construct API URL
+    URL = "/CRYPTOLIST/" & address & "/" & chain & "/" & http_options("apikey")
+    
+    ' Combine private path and API URL
+    URL = private_path & URL
+    
+    ' Send API request
+    Set request = CreateObject("MSXML2.XMLHTTP")
+    request.Open "GET", URL, False
+    request.setRequestHeader "apikey", http_options("apikey")
+    request.send
+
+    ' Parse JSON response
+    Set json = JsonConverter.ParseJson(request.responseText)
+    
+    ' Create output array
+    ReDim Preserve data(1 To json.Count, 1 To 6) ' Assuming 6 fields: CHAIN, CONTRACT, SYMBOL, QTY, PRICE, 'AMOUNT ($)'
+    
+    ' Extract field values from each JSON object
+    For i = 1 To json.Count
+        data(i, 1) = json(i)("CHAIN")
+        data(i, 2) = json(i)("CONTRACT")
+        data(i, 3) = json(i)("SYMBOL")
+        data(i, 4) = Val(json(i)("QTY"))
+        data(i, 5) = Val(json(i)("PRICE"))
+        data(i, 6) = Val(json(i)("AMOUNT ($)"))
+    Next i
+
+    Application.Calculation = xlCalculationAutomatic
+
+    ' Return output array
+    CRYPTOTOKENLIST = data
+
+End Function
+Public Function CRYPTOTX(addresses As Variant, network As String) As Variant
+Attribute CRYPTOTX.VB_Description = "Returns the historical transaction list on a range of addresses"
+Attribute CRYPTOTX.VB_ProcData.VB_Invoke_Func = " \n14"
+' Returns the historical transaction list on a range of addresses
+' addresses: Array of addresses (max 3 on freemium)
+' network: Available networks (e.g., btc, eth, bnb, etc.)
+
+    ' Declare variables and objects
+    Dim URL As String
+    Dim request As Object
+    Dim private_path As String
+    Dim http_options As Object
+    Dim json As Object
+    Dim data() As Variant
+    Dim i As Long, k As Long
+    Dim CallerRows As Long
+    Application.Calculation = xlCalculationManual
+
+    ' Set API endpoint and options
+    private_path = "https://api.charmantadvisory.com"
+    Set http_options = CreateObject("Scripting.Dictionary")
+    http_options("apikey") = GetMyIPAddress()
+
+    ' Check if custom API key is provided
+    If CRYPTOTOOLS_API_KEY <> "my_api_key" Then
+        private_path = "https://privateapi.charmantadvisory.com"
+        Set http_options = CreateObject("Scripting.Dictionary")
+        http_options.Add "headers", CreateObject("Scripting.Dictionary")
+        http_options("headers")("apikey") = CRYPTOTOOLS_API_KEY
+    End If
+
+    ' Construct API URL
+    If TypeOf addresses Is Range Then
+        CallerRows = addresses.Rows.Count
+        URL = "/TXALL/" & addresses(1, 1).Value
+        For k = 2 To CallerRows
+            URL = URL & "%2C" & addresses(k, 1).Value
+        Next k
+    Else
+        URL = "/TXALL/" & addresses
+    End If
+
+    URL = URL & "/" & network & "/" & http_options("apikey")
+
+    ' Combine private path and API URL
+    URL = private_path & URL
+
+    ' Send API request
+    Set request = CreateObject("MSXML2.XMLHTTP")
+    request.Open "GET", URL, False
+    request.setRequestHeader "apikey", http_options("apikey")
+    request.send
+
+    ' Parse JSON response
+    Set json = JsonConverter.ParseJson(request.responseText)
+
+    ' Create output array
+    ReDim Preserve data(1 To json.Count, 1 To 5) ' Assuming 5 fields: transactional data fields
+
+    ' Extract field value from each JSON object
+    For i = 1 To json.Count
+        data(i, 1) = json(i)("Field1") ' Replace "Field1" with actual field name
+        data(i, 2) = json(i)("Field2") ' Replace "Field2" with actual field name
+        ' ... continue for other fields as per the JSON structure
+    Next i
+
+    Application.Calculation = xlCalculationAutomatic
+
+    ' Return output array
+    CRYPTOTX = data
+
+End Function
 
 Public Function CRYPTOVOLATILITY(token As Variant) As Variant
 Attribute CRYPTOVOLATILITY.VB_Description = "Returns cryptocurrency 30 Day volatility against USD"
