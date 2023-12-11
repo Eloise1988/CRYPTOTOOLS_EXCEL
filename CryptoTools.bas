@@ -1,4 +1,4 @@
-Attribute VB_Name = "CryptoTools"
+
 ''
 ' CRYPTOTOOLS v1.0.3
 ' (c) Eloise1988 - https://github.com/Eloise1988/CRYPTOTOOLS_EXCEL
@@ -53,8 +53,6 @@ Sub AddFunctionDescription()
     Application.MacroOptions Macro:="CRYPTOVOLATILITY", Description:="Returns cryptocurrency 30 Day volatility against USD"
 End Sub
 Public Function CRYPTOPRICE(ticker As Variant) As Variant
-Attribute CRYPTOPRICE.VB_Description = "Returns cryptocurrency prices in USD"
-Attribute CRYPTOPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
 ' Returns cryptocurrency prices in USD
 ' ticker: The array of tickers you want prices from
     ' Declare variables and objects
@@ -136,8 +134,6 @@ Attribute CRYPTOPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
 End Function
 
 Public Function CRYPTOBALANCE(ticker As Variant, address As Variant) As Variant
-Attribute CRYPTOBALANCE.VB_Description = "Returns cryptocurrency wallet balances"
-Attribute CRYPTOBALANCE.VB_ProcData.VB_Invoke_Func = " \n14"
 ' Returns cryptocurrency wallet balances
 ' ticker: The array of tickers you want balances from
 ' address: The array of wallet addresses you want balances from
@@ -228,8 +224,6 @@ End Function
 
 
 Public Function CRYPTONETWORTH(address As Variant) As Variant
-Attribute CRYPTONETWORTH.VB_Description = "Returns a wallet's networth in USD"
-Attribute CRYPTONETWORTH.VB_ProcData.VB_Invoke_Func = " \n14"
 ' Returns a wallet's networth in USD
 ' address: The wallet addresse you want the networth sum from
     
@@ -293,8 +287,6 @@ Attribute CRYPTONETWORTH.VB_ProcData.VB_Invoke_Func = " \n14"
 End Function
 
 Public Function CRYPTODEXPRICE(token1 As Variant, token2 As Variant, exchange As Variant) As Variant
-Attribute CRYPTODEXPRICE.VB_Description = "Returns a list of prices from specific decentralized exchanges"
-Attribute CRYPTODEXPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
 ' Returns cryptocurrency dex prices
 ' token1: The array of token1 from pair (token1/token2)
 ' token2: The array of token2 from pair (token1/token2)
@@ -390,8 +382,6 @@ Attribute CRYPTODEXPRICE.VB_ProcData.VB_Invoke_Func = " \n14"
     
 End Function
 Public Function CRYPTOHIST(ticker As Variant, datatype As String, startdate As String, enddate As String) As Variant
-Attribute CRYPTOHIST.VB_Description = "Returns the historical cryptocurrency OHLC data"
-Attribute CRYPTOHIST.VB_ProcData.VB_Invoke_Func = " \n14"
 ' Returns the historical cryptocurrency OHLC data
 ' ticker: Array of tickers (max 3 on freemium)
 ' datatype: "open", "high", "low", "close", "volume", "marketcap"
@@ -425,9 +415,9 @@ Attribute CRYPTOHIST.VB_ProcData.VB_Invoke_Func = " \n14"
     ' Construct API URL
     If TypeOf ticker Is Range Then
         CallerRows = ticker.Rows.Count
-        URL = "/PRICEHISTO/" & ticker(1, 1).Value
+        URL = "/PRICEHISTO/" & ticker(1, 1).value
         For k = 2 To CallerRows
-            URL = URL & "%2C" & ticker(k, 1).Value
+            URL = URL & "%2C" & ticker(k, 1).value
         Next k
     Else
         URL = "/PRICEHISTO/" & ticker
@@ -466,8 +456,6 @@ Attribute CRYPTOHIST.VB_ProcData.VB_Invoke_Func = " \n14"
 
 End Function
 Public Function CRYPTOTOKENLIST(address As String, Optional chain As String = "all") As Variant
-Attribute CRYPTOTOKENLIST.VB_Description = "Returns the list of all tokens on specified chain or all chains"
-Attribute CRYPTOTOKENLIST.VB_ProcData.VB_Invoke_Func = " \n14"
 ' Returns the list of all tokens on specified chain or all chains
 ' address: The wallet address
 ' chain: The blockchain to query (default is "all")
@@ -530,8 +518,7 @@ Attribute CRYPTOTOKENLIST.VB_ProcData.VB_Invoke_Func = " \n14"
 
 End Function
 Public Function CRYPTOTX(addresses As Variant, network As String) As Variant
-Attribute CRYPTOTX.VB_Description = "Returns the historical transaction list on a range of addresses"
-Attribute CRYPTOTX.VB_ProcData.VB_Invoke_Func = " \n14"
+
 ' Returns the historical transaction list on a range of addresses
 ' addresses: Array of addresses (max 3 on freemium)
 ' network: Available networks (e.g., btc, eth, bnb, etc.)
@@ -563,9 +550,9 @@ Attribute CRYPTOTX.VB_ProcData.VB_Invoke_Func = " \n14"
     ' Construct API URL
     If TypeOf addresses Is Range Then
         CallerRows = addresses.Rows.Count
-        URL = "/TXALL/" & addresses(1, 1).Value
+        URL = "/TXALL/" & addresses(1, 1).value
         For k = 2 To CallerRows
-            URL = URL & "%2C" & addresses(k, 1).Value
+            URL = URL & "%2C" & addresses(k, 1).value
         Next k
     Else
         URL = "/TXALL/" & addresses
@@ -603,8 +590,7 @@ Attribute CRYPTOTX.VB_ProcData.VB_Invoke_Func = " \n14"
 End Function
 
 Public Function CRYPTOVOLATILITY(token As Variant) As Variant
-Attribute CRYPTOVOLATILITY.VB_Description = "Returns cryptocurrency 30 Day volatility against USD"
-Attribute CRYPTOVOLATILITY.VB_ProcData.VB_Invoke_Func = " \n14"
+
 ' Returns cryptocurrency 30 Day volatility against USD
 ' token: The array of tokens you need the 30 day volatility from
     
